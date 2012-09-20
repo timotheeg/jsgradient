@@ -24,7 +24,17 @@ var grad3 = new Gradient(
 grad3.addColor(0.2, new Color(255, 255, 0));
 grad3.addColor(0.8, new Color(0, 255, 0));
 
-var gradients = [grad1, grad2, grad3];
+var grad4 = new Gradient('yellow', 'purple', 'red');
+
+var grad5 = new Gradient(new Color(255, 0, 0), 'purple', '#0000ff', 'green', new Color(255, 255, 0));
+
+var grad6 = new Gradient('#cc', 'white', 'black', '#ff0', '#8');
+
+var grad7 = new Gradient(255<<16, 255<<8, 255, (255<<16) + (255<<8));
+
+var grad7 = new Gradient({r:0, g:0, b:255}, {r:255, g:0, b:0});
+
+var gradients = [grad1, grad2, grad3, grad4, grad5, grad6, grad7];
 
 $(function()
 {
@@ -32,16 +42,17 @@ $(function()
 	for(var idx=0; idx<gradients.length; idx++)
 	{
 		var grad = gradients[idx];
-		var grad_el = $("#gradient" + idx);
+		var grad_el = $(document.createElement("div")).addClass("gradient").appendTo("body");
 
 		for (i=0; i<=num_slices; i++)
 		{
-			var colrgba = grad.getColorAt(i/num_slices).toRGBAString();
+			var col = grad.getColorAt(i/num_slices);
+			var colrgba = col.toRGBAString();
 
 			grad_el.append($(document.createElement("div")).css({
 				left: i + "px"
 				, 'background-color': colrgba
-			}).attr("title", colrgba));	
+			}).attr("title", colrgba + "; " + col.toHexString()));	
 		}
 	}
 });
@@ -61,8 +72,5 @@ height: 25px;
 </style>
 </head>
 <body>
-<div id="gradient0" class="gradient"></div>
-<div id="gradient1" class="gradient"></div>
-<div id="gradient2" class="gradient"></div>
 </body>
 </html>
