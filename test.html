@@ -1,0 +1,68 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<script language="javascript" src="http://code.jquery.com/jquery-1.8.1.min.js"></script>
+<script language="javascript" src="color.js"></script>
+<script language="javascript" src="gradient.js"></script>
+<script language="javascript">
+
+var grad1 = new Gradient(
+	  new Color(255, 0, 0)
+	, new Color(0, 255, 0)
+);
+
+var grad2 = new Gradient(
+	  new Color(255, 0, 0)
+	, new Color(255, 255, 0)
+	, new Color(0, 255, 0)
+);
+
+var grad3 = new Gradient(
+	  new Color(255, 0, 0)
+	, new Color(0, 0, 255)
+);
+grad3.addColor(0.2, new Color(255, 255, 0));
+grad3.addColor(0.8, new Color(0, 255, 0));
+
+var gradients = [grad1, grad2, grad3];
+
+$(function()
+{
+	var num_slices = 500;
+	for(var idx=0; idx<gradients.length; idx++)
+	{
+		var grad = gradients[idx];
+		var grad_el = $("#gradient" + idx).css({position: "relative", margin: "10px"});
+
+		for (i=0; i<=num_slices; i++)
+		{
+			var colrgba = grad.getColorAt(i/num_slices).toRGBAString();
+
+			grad_el.append($(document.createElement("div")).css({
+				left: i + "px"
+				, 'background-color': colrgba
+			}).attr("title", colrgba));	
+		}
+	}
+});
+
+</script>
+<style>
+.gradient {
+height: 25px;
+position: relative;
+margin: 10px;
+}
+.gradient div {
+position: absolute;
+width: 1px;
+height: 25px;
+}
+</style>
+</head>
+<body>
+<div id="gradient0" class="gradient"></div>
+<div id="gradient1" class="gradient"></div>
+<div id="gradient2" class="gradient"></div>
+</body>
+</html>
