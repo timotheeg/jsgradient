@@ -21,8 +21,8 @@ var grad3 = new Gradient(
 	  new Color(255, 0, 0)
 	, new Color(0, 0, 255)
 );
-grad3.addColor(0.2, new Color(255, 255, 0));
-grad3.addColor(0.8, new Color(0, 255, 0));
+grad3.addColor(0.15, new Color(255, 255, 0));
+grad3.addColor(0.85, new Color(0, 255, 0));
 
 var grad4 = new Gradient('yellow', 'purple', 'red');
 
@@ -34,11 +34,13 @@ var grad7 = new Gradient(255<<16, 255<<8, 255, (255<<16) + (255<<8));
 
 var grad7 = new Gradient({r:0, g:0, b:255}, {r:255, g:0, b:0});
 
-var gradients = [grad1, grad2, grad3, grad4, grad5, grad6, grad7];
+var grad8 = new Gradient('aqua', 'black', 'blue', 'fuchsia', 'grey', 'green', 'lime', 'maroon', 'navy', 'olive', 'purple', 'red', 'silver', 'teal', 'white', 'yellow');
+
+var gradients = [grad1, grad2, grad3, grad4, grad5, grad6, grad7, grad8];
 
 $(function()
 {
-	var num_slices = 500;
+	var num_slices = 750;
 	for(var idx=0; idx<gradients.length; idx++)
 	{
 		var grad = gradients[idx];

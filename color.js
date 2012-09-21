@@ -106,6 +106,8 @@
 			+ (b.length < 2 ? '0' : '' ) + b;
 	}
 
+	p.toString = p.toHexString;
+
 	p.getMidColor = function(targetCol, ratio)
 	{
 		ratio = isNaN(ratio) ? .5 : Math.max(0, Math.min(ratio, 1));
@@ -118,22 +120,23 @@
 	}
 
 	var named_cache = {}, named = {
-		     aqua: "#00ffff"
-		,   black: "#000000"
-		,    blue: "#0000ff"
-		, fuchsia: "#ff00ff"
-		,    gray: "#808080"
+		     aqua: "#0ff"
+		,   black: "#0"
+		,    blue: "#00f"
+		, fuchsia: "#f0f"
+		,    grey: "#80"
+		,    gray: "#80"
 		,   green: "#008000"
-		,    lime: "#00ff00"
+		,    lime: "#0f0"
 		,  maroon: "#800000"
 		,    navy: "#000080"
 		,   olive: "#808000"
 		,  purple: "#800080"
-		,     red: "#ff0000"
-		,  silver: "#c0c0c0"
+		,     red: "#f00"
+		,  silver: "#c0"
 		,    teal: "#008080"
-		,   white: "#ffffff"
-		,  yellow: "#ffff00"
+		,   white: "#f"
+		,  yellow: "#ff0"
 	};
 	
 })();
