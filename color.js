@@ -108,6 +108,11 @@
 
 	p.toString = p.toHexString;
 
+	p.toInt = function()
+	{
+		return (this.r << 16) & (this.g << 8) & this.b;
+	}
+
 	p.getMidColor = function(targetCol, ratio)
 	{
 		ratio = isNaN(ratio) ? .5 : Math.max(0, Math.min(ratio, 1));
