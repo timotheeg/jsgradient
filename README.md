@@ -7,7 +7,7 @@ Warning: this tiny lib is not suited to draw or animate (it has no knowlege of t
 
 The purpose of the lib is to allow you to define Gradients with an arbitrary number of colors to represent a color-based continuous scale, and determine what color you need to pick for a given position on the scale.
 
-For example, if you want to make a table representing success and failure ratios of a number of tests with color information, going from all fail (red), to all pass (green), with yellow for 50%, The Gradient class allows you to determine what color to set the background of each cell in the table.
+For example, if you want to make a table representing success and failure ratios of a number of tests with color information, going from all fail (red), to all pass (green), with yellow for 50%, the Gradient class allows you to determine what color to set the background of each cell in the table.
 
 Code samples:
 
@@ -24,5 +24,5 @@ Several "definitions" of colors can be provided (RGBA only for now). See test.ht
 
 Features:
 * linear gradients with arbitrary number of colors
-* arbitrary distance between colors supported in the gradient dfinition
+* arbitrary distance between colors supported in the gradient definition
 * multiple color definitions (hex strings, (some) named colors, 32 bit ints, Color objects)
