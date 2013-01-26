@@ -1,44 +1,59 @@
+/*jshint boss: true, smarttabs:true, laxcomma:true, laxbreak:true, bitwise:false */
+
+// global class
+var Color;
+
 (function(undefined)
 {
+	'use strict';
+	
 	Color = function(r, g, b, a)
 	{
 		this.r = Math.max(0, Math.min(r, 255));
 		this.g = Math.max(0, Math.min(g, 255));
 		this.b = Math.max(0, Math.min(b, 255));
 		this.a = isNaN(a) ? 1 : Math.max(0, Math.min(a, 1));
-	}
+	};
 
 	Color.create = function(entry)
 	{
-		if (entry instanceof Color) return entry;
+		if (entry instanceof Color)
+		{
+			return entry;
+		}
 
-		var ztype = typeof(entry);
-		if (ztype == "number")
+		switch( typeof(entry) )
 		{
-			entry = Math.round(entry);
-			return new Color(
-				  (entry & 0xff0000) >> 16
-				, (entry & 0xff00) >> 8
-				, (entry & 0xff)
-			);
-		}
-		else if (ztype == "string")
-		{
-			entry = entry.toLowerCase();
-			if (named_cache[entry]) return named_cache[entry];
-			if (named[entry]) return named_cache[entry] = this.parseHexString(named[entry]);
-			return this.parseHexString(entry);
-		}
-		else if (ztype == "object")
-		{
-			if (!(isNaN(entry.r) || isNaN(entry.g) || isNaN(entry.b)))
-			{
-				return new Color(entry.r, entry.g, entry.b, entry.a);
-			} 
+			case "number":
+				entry = Math.round(entry);
+				return new Color(
+					  (entry & 0xff0000) >> 16
+					, (entry & 0xff00) >> 8
+					, (entry & 0xff)
+				);
+
+			case "string":
+				entry = entry.toLowerCase();
+				if (named_cache[entry])
+				{
+					return named_cache[entry];
+				}
+				if (named[entry])
+				{
+					return named_cache[entry] = this.parseHexString(named[entry]);
+				}
+				return this.parseHexString(entry);
+				
+			case "object":
+				if (!(isNaN(entry.r) || isNaN(entry.g) || isNaN(entry.b)))
+				{
+					return new Color(entry.r, entry.g, entry.b, entry.a);
+				}
+			
 		}
 
 		throw "Not a color";
-	}
+	};
 
 	
 	// regexps will only be lazy-initialized
@@ -53,11 +68,13 @@
 					var v = parseInt(m[1] + m[1], 16);
 					return new Color(v, v, v);
 				  }]
+				  
 				, [new RegExp('^#([0-9a-f]{2})$'), function(m)
 				  {
 					var v = parseInt(m[1], 16); 
 					return new Color(v, v, v);
 				  }]
+				  
 				, [new RegExp('^#([0-9a-f]{3})$'), function(m)
 				  {
 					var s = m[1]; 
@@ -67,6 +84,7 @@
 						, parseInt(s.charAt(2) + s.charAt(2), 16)
 					);
 				  }]
+				  
 				, [new RegExp('^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$'), function(m)
 				  {
 					return new Color(
@@ -79,13 +97,16 @@
 		}
 
 		var m;
-		for (idx=res.length; idx-->0;)
+		for (var idx=res.length; idx-->0;)
 		{
-			if (m = res[idx][0].exec(s)) return res[idx][1](m);
+			if (m = res[idx][0].exec(s))
+			{
+				return res[idx][1](m);
+			}
 		}
 
 		throw "Not a valid hex color";
-	}
+	};
 
 
 	var p = Color.prototype;
@@ -93,7 +114,7 @@
 	{
 		var channels = [this.r, this.g, this.b];
 		return  (this.a >= 1 ? 'rgb(' : (channels.push(this.a), 'rbga(')) + channels.join(', ') + ')';
-	}
+	};
 
 	p.toHexString = function()
 	{
@@ -104,25 +125,25 @@
 			+ (r.length < 2 ? '0' : '' ) + r
 			+ (g.length < 2 ? '0' : '' ) + g
 			+ (b.length < 2 ? '0' : '' ) + b;
-	}
+	};
 
 	p.toString = p.toHexString;
 
 	p.toInt = function()
 	{
 		return (this.r << 16) & (this.g << 8) & this.b;
-	}
+	};
 
 	p.getMidColor = function(targetCol, ratio)
 	{
-		ratio = isNaN(ratio) ? .5 : Math.max(0, Math.min(ratio, 1));
+		ratio = isNaN(ratio) ? 0.5 : Math.max(0, Math.min(ratio, 1));
 		return new Color(
 			  this.r + (Math.round((targetCol.r - this.r) * ratio))
 			, this.g + (Math.round((targetCol.g - this.g) * ratio))
 			, this.b + (Math.round((targetCol.b - this.b) * ratio))
 			, this.a + (Math.round((targetCol.a - this.a) * ratio))
 		);
-	}
+	};
 
 	var named_cache = {}, named = {
 		     aqua: "#0ff"
