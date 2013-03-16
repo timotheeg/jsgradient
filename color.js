@@ -1,4 +1,4 @@
-/*jshint boss: true, smarttabs:true, laxcomma:true, laxbreak:true, bitwise:false */
+/*jshint boss:true, smarttabs:true, laxcomma:true, laxbreak:true, bitwise:false */
 
 // global class
 var Color;
@@ -7,13 +7,58 @@ var Color;
 {
 	'use strict';
 	
+	// ===================================================
+	// Private Statics
+	// ===================================================
+
+	var _min = Math.min
+		, _max = Math.max
+		, isNumber = function(v)
+		{
+			return (typeof(v) === "number");
+		}
+		, isInt = function(v)
+		{
+			return isNumber(v) && (v % 1) === 0;
+		}
+		, isInRange = function(v, min, max)
+		{
+			return (v >= min && v <= max);
+		}
+		, clamp = function(v, min, max)
+		{
+			return _max(min, _min(v, max));
+		};
+
+	// ===================================================
+	// Constructor
+	// ===================================================
+
 	Color = function(r, g, b, a)
 	{
-		this.r = Math.max(0, Math.min(r, 255));
-		this.g = Math.max(0, Math.min(g, 255));
-		this.b = Math.max(0, Math.min(b, 255));
-		this.a = isNaN(a) ? 1 : Math.max(0, Math.min(a, 1));
+		// a is optional, if it not defined, we set up default NOW
+		if (a === undefined) a = 1;
+
+		// all color components MUST be valid to be accepted
+		if (!(
+			   isInt(r) && isInRange(r, 0, 255)
+			&& isInt(g) && isInRange(g, 0, 255)
+			&& isInt(b) && isInRange(b, 0, 255)
+			&& isNumber(a) && isInRange(a, 0, 1)
+		))
+		{
+			throw ["invalid arguments", [r,g,b,a]];
+		}
+
+		this.r = r;
+		this.g = g;
+		this.b = b;
+		this.a = a;
 	};
+
+	// ===================================================
+	// Static Color methods below
+	// ===================================================
 
 	Color.create = function(entry)
 	{
@@ -25,40 +70,21 @@ var Color;
 		switch( typeof(entry) )
 		{
 			case "number":
-				entry = Math.round(entry);
-				return new Color(
-					  (entry & 0xff0000) >> 16
-					, (entry & 0xff00) >> 8
-					, (entry & 0xff)
-				);
+				return this.createFromInt(entry);
 
 			case "string":
-				entry = entry.toLowerCase();
-				if (named_cache[entry])
-				{
-					return named_cache[entry];
-				}
-				if (named[entry])
-				{
-					return named_cache[entry] = this.parseHexString(named[entry]);
-				}
-				return this.parseHexString(entry);
+				return this.createFromHexString(entry);
 				
 			case "object":
-				if (!(isNaN(entry.r) || isNaN(entry.g) || isNaN(entry.b)))
-				{
-					return new Color(entry.r, entry.g, entry.b, entry.a);
-				}
-			
+				return this.createFromObject(entry);
 		}
 
-		throw "Not a color";
+		throw ["Not a color", entry];
 	};
-
 	
-	// regexps will only be lazy-initialized
+	// hex string regexps will be lazy-initialized
 	var res = null;
-	Color.parseHexString = function(s)
+	var localCreateFromHexString = function(str)
 	{
 		if (!res)
 		{
@@ -99,21 +125,129 @@ var Color;
 		var m;
 		for (var idx=res.length; idx-->0;)
 		{
-			if (m = res[idx][0].exec(s))
+			if (m = res[idx][0].exec(str))
 			{
 				return res[idx][1](m);
 			}
 		}
 
-		throw "Not a valid hex color";
+		throw ["Not a valid hex color", s];
+	};
+
+	var named_cache = {}, named = {
+		     aqua: "#0ff"
+		,   black: "#0"
+		,    blue: "#00f"
+		, fuchsia: "#f0f"
+		,    grey: "#80"
+		,    gray: "#80"
+		,   green: "#008000"
+		,    lime: "#0f0"
+		,  maroon: "#800000"
+		,    navy: "#000080"
+		,   olive: "#808000"
+		,  purple: "#800080"
+		,     red: "#f00"
+		,  silver: "#c0"
+		,    teal: "#008080"
+		,   white: "#f"
+		,  yellow: "#ff0"
+	};
+
+	Color.createFromHexString = function(entry)
+	{
+		entry = entry.toLowerCase();
+
+		// check local cache to reduce repeat parsing
+		if (named_cache[entry])
+		{
+			return named_cache[entry];
+		}
+		if (named[entry])
+		{
+			return named_cache[entry] = localCreateFromHexString(named[entry]);
+		}
+
+		return localCreateFromHexString(entry);
+	};
+
+	Color.createFromInt = function(entry)
+	{
+		entry = Math.round(entry);
+		return new Color(
+			  (entry & 0xff0000) >> 16
+			, (entry & 0xff00) >> 8
+			, (entry & 0xff)
+		);
+	};
+
+	Color.createFromObject = function(entry)
+	{
+		var r, g, b, a;
+
+		if (isInt(entry.r) && isInt(entry.g) && isInt(entry.b))
+		{
+			// basic check for ints at named fields passed
+			r = entry.r;
+			g = entry.g;
+			b = entry.b;
+			a = entry.a;
+		}
+		else if (isInt(entry[0]) && isInt(entry[1]) && isInt(entry[2]))
+		{
+			// basic check for ints at fixed indexes passed (~Array)
+			r = entry[0];
+			g = entry[1];
+			b = entry[2];
+			a = entry[3];
+		}
+		else
+		{
+			throw ["Not a color", entry];
+		}
+
+		// if we reach here, we will be forgiving and force the parameters into correct values/ranges
+		// special logic required for the opacity parameter a, which is optional
+		switch( typeof(a) )
+		{
+			case "number":
+				a = clamp(a, 0, 1);
+				break;
+
+			case "string":
+				a = parseFloat(a);
+				a = isNaN(a) ? undefined : clamp(a, 0, 1);
+				break;
+
+			case "boolean":
+				a = a ? 1 : 0;
+				break;
+
+			default:
+				// if we reach here, something is wrong with a
+				// we could throw (?), but let's pretend a was not present, and generate a valid color
+				a = undefined;
+		}
+
+		return new Color(
+			  clamp(r, 0, 255)
+			, clamp(g, 0, 255)
+			, clamp(b, 0, 255)
+			, a
+		);
 	};
 
 
+	// ===================================================
+	// Instance methods below
+	// ===================================================
+
 	var p = Color.prototype;
+
 	p.toRGBAString = function()
 	{
 		var channels = [this.r, this.g, this.b];
-		return  (this.a >= 1 ? 'rgb(' : (channels.push(this.a), 'rbga(')) + channels.join(', ') + ')';
+		return (this.a >= 1 ? 'rgb(' : (channels.push(this.a), 'rbga(')) + channels.join(', ') + ')';
 	};
 
 	p.toHexString = function()
@@ -136,33 +270,13 @@ var Color;
 
 	p.getMidColor = function(targetCol, ratio)
 	{
-		ratio = isNaN(ratio) ? 0.5 : Math.max(0, Math.min(ratio, 1));
+		ratio = !isNumber(ratio) ? 0.5 : clamp(ratio, 0, 1);
 		return new Color(
 			  this.r + (Math.round((targetCol.r - this.r) * ratio))
 			, this.g + (Math.round((targetCol.g - this.g) * ratio))
 			, this.b + (Math.round((targetCol.b - this.b) * ratio))
 			, this.a + (Math.round((targetCol.a - this.a) * ratio))
 		);
-	};
-
-	var named_cache = {}, named = {
-		     aqua: "#0ff"
-		,   black: "#0"
-		,    blue: "#00f"
-		, fuchsia: "#f0f"
-		,    grey: "#80"
-		,    gray: "#80"
-		,   green: "#008000"
-		,    lime: "#0f0"
-		,  maroon: "#800000"
-		,    navy: "#000080"
-		,   olive: "#808000"
-		,  purple: "#800080"
-		,     red: "#f00"
-		,  silver: "#c0"
-		,    teal: "#008080"
-		,   white: "#f"
-		,  yellow: "#ff0"
 	};
 	
 })();
