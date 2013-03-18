@@ -265,7 +265,7 @@ var Color;
 
 	p.toInt = function()
 	{
-		return (this.r << 16) & (this.g << 8) & this.b;
+		return (this.r << 16) | (this.g << 8) | this.b;
 	};
 
 	p.getMidColor = function(targetCol, ratio)
