@@ -1,0 +1,39 @@
+{
+  "name": "jsgradient",
+  "version": "0.0.1",
+  "description": "Graduated color interpolation library",
+  "homepage": "https://github.com/timotheeg/jsgradient",
+  "keywords": [
+    "gradient",
+    "color interpolation"
+  ],
+  "maintainers": [
+    {
+      "name": "Timothee Groleau",
+      "email": "tg@timotheegroleau.com",
+      "web": "http://timotheegroleau.com"
+    } 
+  ],
+  "contributors": [],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/mit-license.php"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/timotheeg/jsgradient"
+    }
+  ],
+  "github": "https://github.com/timotheeg/jsgradient",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-nodeunit": "*"
+  },
+  "scripts": {
+    "install": ""
+  }
+}

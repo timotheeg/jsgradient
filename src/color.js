@@ -1,9 +1,6 @@
 /*jshint boss:true, smarttabs:true, laxcomma:true, laxbreak:true, bitwise:false */
 
-// global class
-var Color;
-
-(function(undefined)
+var module_setup = function(undefined)
 {
 	'use strict';
 	
@@ -34,7 +31,7 @@ var Color;
 	// Constructor
 	// ===================================================
 
-	Color = function(r, g, b, a)
+	var Color = function(r, g, b, a)
 	{
 		// a is optional, if it not defined, we set up default NOW
 		if (a === undefined) a = 1;
@@ -47,7 +44,7 @@ var Color;
 			&& isNumber(a) && isInRange(a, 0, 1)
 		))
 		{
-			throw ["invalid arguments", [r,g,b,a]];
+			throw new Error("invalid arguments: " + [r,g,b,a]);
 		}
 
 		this.r = r;
@@ -79,7 +76,7 @@ var Color;
 				return this.createFromObject(entry);
 		}
 
-		throw ["Not a color", entry];
+		throw new Error("Not a color: " + entry);
 	};
 	
 	// hex string regexps will be lazy-initialized
@@ -131,7 +128,7 @@ var Color;
 			}
 		}
 
-		throw ["Not a valid hex color", s];
+		throw new Error("Not a valid hex color: " + s);
 	};
 
 	var named_cache = {}, named = {
@@ -203,7 +200,7 @@ var Color;
 		}
 		else
 		{
-			throw ["Not a color", entry];
+			throw new Error("Not a color: " + entry);
 		}
 
 		// if we reach here, we will be forgiving and force the parameters into correct values/ranges
@@ -247,7 +244,7 @@ var Color;
 	p.toRGBAString = function()
 	{
 		var channels = [this.r, this.g, this.b];
-		return (this.a >= 1 ? 'rgb(' : (channels.push(this.a), 'rbga(')) + channels.join(', ') + ')';
+		return (this.a >= 1 ? 'rgb(' : (channels.push(this.a), 'rgba(')) + channels.join(',') + ')';
 	};
 
 	p.toHexString = function()
@@ -268,6 +265,11 @@ var Color;
 		return (this.r << 16) | (this.g << 8) | this.b;
 	};
 
+	p.toArray = function()
+	{
+		return [this.r, this.g, this.b, this.a];
+	};
+
 	p.getMidColor = function(targetCol, ratio)
 	{
 		ratio = !isNumber(ratio) ? 0.5 : clamp(ratio, 0, 1);
@@ -275,8 +277,30 @@ var Color;
 			  this.r + (Math.round((targetCol.r - this.r) * ratio))
 			, this.g + (Math.round((targetCol.g - this.g) * ratio))
 			, this.b + (Math.round((targetCol.b - this.b) * ratio))
-			, this.a + (Math.round((targetCol.a - this.a) * ratio))
+			, this.a + ((targetCol.a - this.a) * ratio)
 		);
 	};
-	
-})();
+
+	return Color;
+};
+
+
+// ===================================================
+// Access control
+// ===================================================
+
+if (typeof define !== "undefined")
+{
+	// AMD compatibility
+	define([], module_setup);
+}
+else if (typeof module !== "undefined" && module.exports)
+{
+	// exports 
+	module.exports = module_setup();
+}
+else
+{
+	// brings class to current context
+	this.Color = module_setup();
+}

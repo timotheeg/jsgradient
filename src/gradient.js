@@ -1,16 +1,13 @@
-// global classes
-var Color, Gradient;
-
-(function(undefined)
+var module_setup = function(Color, undefined)
 {
 	'use strict';
 	
-	Gradient = function(/*variable length Color objects*/)
+	var Gradient = function(/*variable length Color objects*/)
 	{
 		var len = arguments.length;
 		if (len <= 1)
 		{
-			throw "A Gradient needs at least 2 colors";
+			throw new Error("A Gradient needs at least 2 colors");
 		}
 
 		// constructor assume equidistant colors
@@ -71,6 +68,29 @@ var Color, Gradient;
 		}
 
 		// should never reach here!
-		throw "Something's fucked up!";
+		throw new Error("Something's fucked up!");
 	};
-})();
+
+	return Gradient;
+};
+
+
+// ===================================================
+// Visibility control
+// ===================================================
+
+if (typeof define !== "undefined")
+{
+	// AMD compatibility
+	define(["color"], module_setup);
+}
+else if (typeof module !== "undefined" && module.exports)
+{
+	// sets up a hard dependency on color.js; providing Color class
+	module.exports = module_setup( require("./color.js") );
+}
+else
+{
+	// Assumes Color is available within same context
+	this.Gradient = module_setup( this.Color );
+}
