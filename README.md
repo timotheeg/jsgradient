@@ -1,5 +1,5 @@
-jsgradient
-==========
+jsgradient [![Build Status](https://travis-ci.org/timotheeg/jsgradient.png)](https://travis-ci.org/timotheeg/jsgradient)
+==========================================================================================================================
 
 Simple Gradient management library in js, useful to create heatmaps
 
