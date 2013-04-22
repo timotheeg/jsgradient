@@ -1,6 +1,6 @@
 {
   "name": "jsgradient",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Graduated color interpolation library",
   "homepage": "https://github.com/timotheeg/jsgradient",
   "keywords": [
@@ -30,10 +30,11 @@
   "github": "https://github.com/timotheeg/jsgradient",
   "devDependencies": {
     "grunt": "~0.4.1",
+    "grunt-cli": "*",
     "grunt-contrib-jshint": "*",
     "grunt-contrib-nodeunit": "*"
   },
   "scripts": {
-    "install": ""
+    "test": "node_modules/grunt-cli/bin/grunt nodeunit"
   }
 }
