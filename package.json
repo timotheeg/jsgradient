@@ -35,6 +35,6 @@
     "grunt-contrib-nodeunit": "*"
   },
   "scripts": {
-    "test": "node_modules/grunt-cli/bin/grunt nodeunit"
+    "test": "node_modules/grunt-cli/bin/grunt test"
   }
 }
