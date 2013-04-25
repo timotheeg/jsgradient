@@ -8,6 +8,23 @@ exports.test_inards = function(test)
 	test.done();
 };
 
+exports.test_create_makes_copy = function(test)
+{
+	var col0 = {r:10, g:20, b:30, a:0.5}
+		, col1 = Color.create(col0)
+		, col2 = Color.create(col1);
+
+
+	test.deepEqual( col1, col0);
+	test.deepEqual( col2, col0);
+	test.deepEqual( col1, col2);
+
+	test.notEqual(col1, col2);
+	test.notStrictEqual(col1, col2);
+
+	test.done();
+};
+
 exports.test_exceptions = function(test)
 {
 	test.doesNotThrow( function(){ var c = new Color(0, 0, 0); }, "implicit alpha channel");

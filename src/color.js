@@ -61,7 +61,7 @@ var module_setup = function(undefined)
 	{
 		if (entry instanceof Color)
 		{
-			return entry;
+			return entry.clone();
 		}
 
 		switch( typeof(entry) )
@@ -101,7 +101,8 @@ var module_setup = function(undefined)
 				, [new RegExp('^#([0-9a-f]{3})$'), function(m)
 				  {
 					var s = m[1]; 
-					return new Color(
+					return new Color
+					(
 						  parseInt(s.charAt(0) + s.charAt(0), 16)
 						, parseInt(s.charAt(1) + s.charAt(1), 16) 
 						, parseInt(s.charAt(2) + s.charAt(2), 16)
@@ -110,7 +111,8 @@ var module_setup = function(undefined)
 				  
 				, [new RegExp('^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$'), function(m)
 				  {
-					return new Color(
+					return new Color
+					(
 						  parseInt(m[1], 16)
 						, parseInt(m[2], 16)
 						, parseInt(m[3], 16)
@@ -270,10 +272,22 @@ var module_setup = function(undefined)
 		return [this.r, this.g, this.b, this.a];
 	};
 
+	p.clone = function()
+	{
+		return new Color
+		(
+			  this.r
+			, this.g
+			, this.b
+			, this.a
+		);
+	};
+
 	p.getMidColor = function(targetCol, ratio)
 	{
 		ratio = !isNumber(ratio) ? 0.5 : clamp(ratio, 0, 1);
-		return new Color(
+		return new Color
+		(
 			  this.r + (Math.round((targetCol.r - this.r) * ratio))
 			, this.g + (Math.round((targetCol.g - this.g) * ratio))
 			, this.b + (Math.round((targetCol.b - this.b) * ratio))
