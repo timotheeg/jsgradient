@@ -30,7 +30,7 @@ var module_setup = function(Color, undefined)
 		val = Math.max(0, Math.min(val, 1));
 		col = Color.create(col);
 		
-		for (var idx=m.length; idx-->0;)
+		for (var idx=m.length; idx--;)
 		{
 			// there can be no duplicate values in the markers
 			// so if value already exists, we overwrite
@@ -53,7 +53,7 @@ var module_setup = function(Color, undefined)
 		var m = this._markers;
 		ratio = Math.max(0, Math.min(ratio, 1));
 		
-		for (var idx=m.length; idx-->0;)
+		for (var idx=m.length; idx--;)
 		{
 			if (ratio === m[idx].val)
 			{
