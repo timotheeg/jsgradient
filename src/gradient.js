@@ -68,7 +68,7 @@ var module_setup = function(Color, undefined)
 		}
 
 		// should never reach here!
-		throw new Error("Something's fucked up!");
+		return new Color(0, 0, 0, 0);
 	};
 
 	return Gradient;
