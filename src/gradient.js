@@ -12,7 +12,7 @@ var module_setup = function(Color, undefined)
 
 		// constructor assume equidistant colors
 		var divisor = len-1;
-		var m = this.markers = [];
+		var m = this._markers = [];
 		for(var idx=0; idx<len; idx++)
 		{
 			m.push({val: idx / divisor, col: Color.create(arguments[idx])});
@@ -26,7 +26,7 @@ var module_setup = function(Color, undefined)
 	p.addColor = function(val, col)
 	{
 		// add a color, garanteeing the markers array is ordered by value
-		var m = this.markers;
+		var m = this._markers;
 		val = Math.max(0, Math.min(val, 1));
 		col = Color.create(col);
 		
@@ -50,7 +50,7 @@ var module_setup = function(Color, undefined)
 	p.getColorAt = function(ratio)
 	{
 		// 1. find slice where ratio falls
-		var m = this.markers;
+		var m = this._markers;
 		ratio = Math.max(0, Math.min(ratio, 1));
 		
 		for (var idx=m.length; idx-->0;)
