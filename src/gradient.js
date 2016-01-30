@@ -11,15 +11,15 @@ var module_setup = function(Color, undefined)
 		}
 
 		// constructor assume equidistant colors
-		var step = 1 / (len-1);
+		var divisor = len-1;
 		var m = this.markers = [];
-		for(var idx=0, cur=0; idx<len; idx++, cur+=step)
+		for(var idx=0; idx<len; idx++)
 		{
-			m.push({val: cur, col: Color.create(arguments[idx])});
+			m.push({val: idx / divisor, col: Color.create(arguments[idx])});
 		}
 
 		// to prevent potential float errors, we set last entry explicitely as 1;
-		m[len-1].val = 1;
+		m[divisor].val = 1;
 	};
 
 	var p = Gradient.prototype;
