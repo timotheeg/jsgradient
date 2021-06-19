@@ -236,6 +236,14 @@ var module_setup = function(undefined)
 		);
 	};
 
+	Color.getMidChannel = function(start, end, ratio) {
+		// Channel blending needs to be done in square space
+		// See: https://www.youtube.com/watch?v=LKnqECcg6Gw
+		var value = start*start + (end*end - start*start) * ratio;
+
+		return Math.round(Math.sqrt(value));
+	}
+
 
 	// ===================================================
 	// Instance methods below
@@ -286,12 +294,13 @@ var module_setup = function(undefined)
 	p.getMidColor = function(targetCol, ratio)
 	{
 		ratio = !isNumber(ratio) ? 0.5 : clamp(ratio, 0, 1);
+
 		return new Color
 		(
-			  this.r + (Math.round((targetCol.r - this.r) * ratio))
-			, this.g + (Math.round((targetCol.g - this.g) * ratio))
-			, this.b + (Math.round((targetCol.b - this.b) * ratio))
-			, this.a + ((targetCol.a - this.a) * ratio)
+			  Color.getMidChannel(this.r, targetCol.r, ratio)
+			, Color.getMidChannel(this.g, targetCol.g, ratio)
+			, Color.getMidChannel(this.b, targetCol.b, ratio)
+			, this.a + ((targetCol.a - this.a) * ratio) // does this need to be done in square space too?
 		);
 	};
 
